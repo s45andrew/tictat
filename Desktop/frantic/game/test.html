@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Board</title>
+    <style>
+        #sA {
+            margin: 15px;
+            padding: 10px;
+            border: 1px solid black;
+            cursor: pointer;
+            background-color: grey;
+        }
+        #heads {
+            margin: 15px;
+            padding: 10px;
+            border: 1px solid black;
+            cursor: pointer; 
+            text-align: center;
+            background-color: yellow;
+            font-size: 34px; /* Increase font size */ 
+            font-weight: bold; /* Make text bold */
+        }
+
+        #theGame {
+            margin: 15px;
+            padding: 10px;
+            border: 1px solid white;
+            cursor: pointer;
+            background-color: silver;
+        }
+
+        #board, #numboard {
+            display: grid;
+            gap: 10px;
+        }
+
+        #board {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        #numboard {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 2px solid white;
+            cursor: pointer;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .active {
+            background-color: yellow;
+        }
+
+        #bottomButton { 
+            margin: 20px;  padding: 10px; 
+            border: 1px solid black; 
+            cursor: pointer;  background-color: lightblue; 
+            font-size: 16px; 
+        }
+        #buttonGalery {
+            margin: 5px; 
+            padding: 5px; 
+            border: 1px solid black; 
+            cursor: pointer; 
+            background-color: lightblue; 
+            font-size: 16px; 
+        }
+        #resultsGalery {
+            margin: 5px; 
+            padding: 5px; 
+            border: 1px solid rgb(240, 233, 233); 
+            cursor: pointer; 
+            background-color: rgb(1, 8, 10); 
+            font-size: 16px; 
+        }#results {   margin: 5px; 
+            padding: 5px;  
+            color: rgb(199, 214, 123); 
+            font-size: 16px; }
+    </style>
+</head>
+<body>
+<div id='sA'>
+    <div id="heads">The Game</div>
+    <div id="theGame">
+        <div id="board"></div>
+        <div id="numboard"></div>
+    </div>
+</div>
+<button id="bottomButton">Click Me!</button>
+<p id='tes'>test</p>
+<div id="buttonGalery">
+    <button>&lt; back</button>
+    <button id="fword">&gt; forward</button>
+    <button id="resetButton">reset</button>
+</div>
+<div id='resultsGalery'>
+<h2 id="results" >playing</h2></div>
+<p id='es'>------------------</p>
+    <script>
+        function reSet() {
+            for (var i = 1; i <= 9; i++) {
+                var cell = document.getElementById("cell-" + i);
+                cell.innerHTML = "";
+                cell.style.backgroundColor = 'silver';
+                // ai[i] = "off";
+               // player[i] = "off";
+            }
+            var cell = document.getElementById("results");
+                cell.innerHTML = "New Game";
+        }
+
+        function moving() {
+            for (var i = 1; i <= 9; i++) {
+                if (ai[i] == 'on') { 
+                    var cell = document.getElementById("cell-" + i);
+                    cell.innerHTML = "X"; 
+                    cell.style.backgroundColor = 'red';
+                }
+                if (player[i] == "on") { 
+                    var cell = document.getElementById("cell-" + i);
+                    cell.innerHTML = "O";
+                    cell.style.backgroundColor = 'yellow';
+                }
+            } var cell = document.getElementById("results");
+            cell.innerHTML = player+ ' '+ ai
+            
+            ;
+        }
+
+        function addnum(element) {
+            element.innerHTML = "X";
+            element.style.backgroundColor = 'yellow';
+            var xx = element.id.replace("cell-", "");
+            var te = document.getElementById("tes"); 
+            te.innerHTML = xx; 
+            xx--;
+            player[xx] = 'on';
+        }
+
+        var ai = ['off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off'];
+        var player = ['off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off'];
+        var table = ['off', 'off', 'off', 'off', 'off', 'off', 'off', 'off', 'off'];
+
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var board = document.getElementById("board");
+            for (var i = 0; i < 9; i++) {
+                var cell = document.createElement("div");
+                cell.className = "cell";
+                cell.innerHTML = getRandomNumber(1, 100);
+                cell.id = "cell-" + (i + 1); // Assign a unique ID to each cell
+                cell.addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    addnum(this);
+                });
+                board.appendChild(cell);
+            }
+
+            document.getElementById("bottomButton").onclick = function() { 
+                var xxx = getRandomNumber(1, 9); 
+                xxx--;
+                if (player[xxx] == 'on') { 
+                    var e = document.getElementById("es");
+                    e.innerHTML = 'match';    
+                }
+                else {
+                var te = document.getElementById("tes"); 
+                te.innerHTML = xxx;
+                var cell = document.getElementById("cell-" + (xxx + 1));
+                cell.innerHTML = xxx; 
+                cell.style.backgroundColor = "red";
+                ai[xxx+1]="on";
+                }
+            };
+
+            document.getElementById("resetButton").onclick = reSet;
+            document.getElementById("fword").onclick = moving ;
+
+
+            function checkWin() {
+    var te = document.getElementById("results");
+    te.innerHTML = 'result'; 
+    if ((player[0] === 'on' && player[1] === 'on' && player[2] === 'on') ||
+        (player[3] === 'on' && player[4] === 'on' && player[5] === 'on') ||
+        (player[6] === 'on' && player[7] === 'on' && player[8] === 'on') ||
+        (player[0] === 'on' && player[3] === 'on' && player[6] === 'on') ||
+        (player[1] === 'on' && player[4] === 'on' && player[7] === 'on') ||
+        (player[2] === 'on' && player[5] === 'on' && player[8] === 'on') ||
+        (player[0] === 'on' && player[4] === 'on' && player[8] === 'on') ||
+        (player[2] === 'on' && player[4] === 'on' && player[6] === 'on')) {
+        result = 'you won';
+        te.innerHTML = result; 
+    }
+}
+function checkAIWin() {
+    if ((ai[0] === 'on' && ai[1] === 'on' && ai[2] === 'on') ||
+        (ai[3] === 'on' && ai[4] === 'on' && ai[5] === 'on') ||
+        (ai[6] === 'on' && ai[7] === 'on' && ai[8] === 'on') ||
+        (ai[0] === 'on' && ai[3] === 'on' && ai[6] === 'on') ||
+        (ai[1] === 'on' && ai[4] === 'on' && ai[7] === 'on') ||
+        (ai[2] === 'on' && ai[5] === 'on' && ai[8] === 'on') ||
+        (ai[0] === 'on' && ai[4] === 'on' && ai[8] === 'on') ||
+        (ai[2] === 'on' && ai[4] === 'on' && ai[6] === 'on')) {
+        result = 'you lost';
+        var te = document.getElementById("results");
+        te.innerHTML = result; 
+    }
+}
+        });
+    </script>
+</body>
+</html>
